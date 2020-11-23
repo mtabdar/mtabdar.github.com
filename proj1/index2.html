@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>NISOC Facility Map</title>
+		
+		<!-- Leaflet 0.5: https://github.com/CloudMade/Leaflet-->
+		<link rel="stylesheet" href="./lib/leaflet.css" />
+		<!--[if lte IE 8]> <link rel="stylesheet" href="../lib/leaflet.ie.css" />  <![endif]-->  
+		<script src="./lib/leaflet.js"></script>
+
+		<!-- MarkerCluster https://github.com/danzel/Leaflet.markercluster -->
+		<link rel="stylesheet" href="./lib/MarkerCluster.css" />
+		<link rel="stylesheet" href="./lib/MarkerCluster.Default.css" />
+		<!--[if lte IE 8]> <link rel="stylesheet" href="../../lib/MarkerCluster.Default.ie.css" /> <![endif]-->
+		<script src="./lib/leaflet.markercluster-src.js"></script>
+		
+		<!-- GeoCSV: https://github.com/joker-x/Leaflet.geoCSV -->
+		<script src="./lib/leaflet.geocsv-src.js"></script>
+		
+		<!-- CodeMirror -->
+		<link rel="stylesheet" href="./lib/codemirror/codemirror.css">
+		<script src="./lib/codemirror/codemirror.js"></script>
+		<script src="./lib/codemirror/util/matchbrackets.js"></script>
+		<script src="./lib/codemirror/mode-javascript.js"></script>
+		
+		<style>	
+			html, body {
+			margin: 0;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			background-color: #eee;
+			}
+			a {
+			text-decoration: none;
+			}
+			.caja {
+			display: block;
+			float:left;
+			width: 43%;
+			margin: 1%;
+			padding: 2%;
+			border: 1px solid #ccc;
+			background-color: #fff;
+			}
+			#mapa {
+			height: 300px;
+			}
+			h1 {
+			margin: 0;
+			text-align: center;
+			padding: 10px;
+			border-bottom: 1px solid #ccc;
+			background-color: #fff
+			}
+			h2 {
+			margin-bottom: 5px;
+			}
+			textarea {
+			clear: both;
+			width: 100%;
+			height: 200px;
+			font-family: monospace;
+			}
+			#cargar {
+			margin: 20px 0 0 0;
+			font-size: 1.2em;
+			}
+			.CodeMirror {
+			border: 1px solid #eee;
+			font-size: 1.2em;
+			height: auto;
+			font-family: monospace;
+			}
+		</style>
+		<link rel="stylesheet" href="./dist/jquery.tree-multiselect.min.css">	<!--Tree-->	
+		<script src="./vendor/jquery-1.11.3.min.js"></script>                   <!--Tree-->
+		<script src="./vendor/jquery-ui.min.js"></script>                       <!--Tree-->
+		<script src="../dist/jquery.tree-multiselect.js"></script>              <!--Tree-->
+	</head>
+	<body>
+		
+		
+		<h1>My Tree+cluster+leaflet Map </h1>
+		<div class="caja">
+			<select id="test-select" multiple="multiple">			
+					<option value="32.33;-5.2;  ../icon/red.png ;abc0"  data-section="Git/RP-1">abc0   </option>
+					<option value="32.51;-5.18;../icon/red.png  ;abc1" data-section="Git/GRP-1">abc1   </option>
+					<option value="32.33;-5.91;../icon/red.png  ;abc2" data-section="Git/GRP-1">abc2   </option>
+					<option value="32.49;-5.01;../icon/red.png  ;abc3" data-section="Git/GRP-1">abc3   </option>
+					<option value="32.64;-5.7; ../icon/red.png  ;abc4 " data-section="Git/RP-2">abc4  </option>
+					<option value="32.44;-5.98;../icon/red.png  ;abc5" data-section="Git/GRP-2 ">abc5   </option>
+					<option value="22.05;-5.55;../icon/red.png  ;abc6" data-section="Git/GRP-2">abc6   </option>
+					<option value="32.99;-5.25;../icon/red.png  ;abc7" data-section="Git/GRP-2">abc7   </option>
+					<option value="22.85;-5.36;../icon/red.png  ;abc8" data-section="Git/GRP-2">abc8   </option>
+					<option value="32.12;-5.32;../icon/red.png  ;abc9" data-section="Git/GRP-2">abc9   </option>
+					<option value="32.51;-5.18;../icon/blue.png ;def0" data-section="Git/GRP-2">def0   </option>
+					<option value="32.33;-5.91;../icon/blue.png ;def1" data-section="Git/GRP-2">def1   </option>
+					<option value="32.12;-5.32;../icon/blue.png ;def2" data-section="Git/GRP-3">def2   </option>
+					<option value="32.99;-5.25;../icon/blue.png ;def3" data-section="Git/GRP-3">def3   </option>
+					<option value="22.09;-5.81;../icon/blue.png ;def4" data-section="Git/GRP-4">def4   </option>
+					<option value="32.44;-5.98;../icon/blue.png ;def5" data-section="Git/GRP-3">def5   </option>
+					<option value="32.92;-5.22;../icon/blue.png ;def6" data-section="Git/GRP-4">def6   </option>
+					<option value="22.54;-5.49;../icon/green.png; jkl"  data-section="Git/GRP-4"> jkl    </option>
+				</select>
+			<div id="controles" style="display:none">
+				
+				<!-- <p>In this example, we load icons and HTML from CSV into the map. We can write full url or relative path. More at <a href="http://leafletjs.com/examples/custom-icons.html">Leaflet documentation</a>.</p> -->
+				
+				<h2>CSV</h2>
+				<textarea id="csv" value=$("#test-select").val()></textarea>
+				
+				<h2>Javascript</h2>
+				<textarea id="opciones">
+L.geoCsv(null,{
+fieldSeparator: ';',
+lineSeparator: ',',
+firstLineTitles: true,
+onEachFeature: function (feature, layer) {
+layer.bindPopup(feature.properties["popup"]);
+},
+pointToLayer: function (feature, latlng) {
+return L.marker(latlng, {
+icon:L.icon({
+iconUrl: feature.properties['icon'],
+shadowUrl: '../icon/shadow.png',
+iconSize: [25,41],
+shadowSize:   [41, 41],
+shadowAnchor: [13, 20]
+})
+});
+}
+});
+			</textarea>
+				
+				<button id="cargar">Load data</button>
+				
+			</div>
+		</div>
+		<div class="caja">
+		<div id="mapa"></div>
+		</div>
+		<div id="tree">
+				
+				
+				
+				<!-- <button onclick="additems()">Add</button> -->
+				<!-- <textarea id="csv" onchange="txtarea()"></textarea> -->
+				<!-- <textarea id="csv1" ></textarea> -->		
+			</div>
+		<script>
+		<!-- <script type="text/javascript"> -->
+					var tree1 = $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true , onChange: treeOnChange, searchable: true,
+						sortable: true,
+						hideSidePanel:false,
+					startCollapsed: true});
+					var csv_editor=CodeMirror.fromTextArea(document.getElementById("csv"), {lineNumbers: true});
+					var editor=$('.CodeMirror')[0].CodeMirror;
+					var str='';
+					function treeOnChange(allSelectedItems, addedItems, removedItems) {
+						//console.log("something changed!");
+						str='lat;lng;icon;popup ,'+$("#test-select").val();
+						document.getElementById('csv').value=str;
+						//textarea
+						//var csv_editor = CodeMirror.fromTextArea(document.getElementById("csv"), {lineNumbers: true});
+						//editor.setValue(str);
+						//update map
+						//cargar()
+						//docluster('');
+						if ($("#test-select").val()!==null){
+						docluster(str)
+						} else {cluster.clearLayers();}
+					}
+					
+					
+					
+					
+		<!-- </ script> -->
+		//codemirror
+		var opciones_editor = CodeMirror.fromTextArea(document.getElementById("opciones"), {
+		lineNumbers: true,
+		matchBrackets: true,
+		mode: "text/typescript"});
+		
+		//var csv_editor = CodeMirror.fromTextArea(document.getElementById("csv"), {lineNumbers: true});
+		
+		
+		//altura del mapa al tamaño de los controles, dos columnas iguales
+		function ajusta_Altura() {
+		var altura = document.getElementById('controles').offsetHeight
+		//document.getElementById('mapa').style.height = altura+20+"px";
+		document.getElementById('mapa').style.height = "450px";
+		}
+		
+		ajusta_Altura();
+		//basemaps
+		var osmMap = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom: 13});
+		var maveric = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom: 13});
+		var localMap = L.tileLayer('../tiles/{z}/{x}/{y}.png', {maxZoom: 13});
+		var satMap = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 14});
+		
+		//instanciamos el mapa
+		//var mapa = L.map('mapa', {attributionControl:false}).setView([49, 3], 4);
+		var mapa = L.map('mapa',{layers: [satMap]}, {attributionControl:false}).setView([49, 3], 8);
+		/*		
+		//L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		//L.tileLayer('../tiles/{z}/{x}/{y}.png', {
+		maxZoom: 13
+		}).addTo(mapa);
+		*/
+		
+		//Base layers definition and addition
+		var baseLayers = {
+			"OSM": osmMap,
+			"Satellite": satMap,			
+			"Maveric":maveric,
+			"Local": localMap,
+		};
+	  
+		 //Add baseLayers to map as control layers
+		 L.control.layers(baseLayers).addTo(mapa);
+		//dotamos de funcionalidad al botón cargar
+		var geo_csv = {};
+		
+		function cargar() {
+			//guardamos los cambios del usuario en sus respectivos textarea
+			opciones_editor.save();
+			csv_editor.save();
+			//borramos la capa geo_csv del mapa
+			mapa.removeLayer(geo_csv);
+			//recreamos la capa con las nuevas opciones
+			geo_csv = eval(document.getElementById('opciones').value);
+			geo_csv.addData(document.getElementById('csv').value);
+			mapa.addLayer(geo_csv);
+			//zoom
+			 mapa.fitBounds(geo_csv.getBounds());
+		};		
+		//cluster
+		var cluster = new L.MarkerClusterGroup();
+		function docluster(csv) {
+		//clear map
+		cluster.clearLayers();			
+		geo_csv = eval(document.getElementById('opciones').value); //added 
+		//
+		//var cluster = new L.MarkerClusterGroup(); //put outside the function
+		
+		geo_csv.addData(csv);
+		cluster.addLayer(geo_csv);
+		mapa.addLayer(cluster);
+		mapa.fitBounds(cluster.getBounds());
+		};
+
+		document.getElementById('cargar').addEventListener('click', cargar, false);
+		
+		</script>
+		
+		</body>
+		</html>
+				
