@@ -1,2 +1,3 @@
 # mtabdar.github.com
-demo link: <a href='mtabdar.github.com'>demo</a>
+demo link: <a href='https://mtabdar.github.io/'>demo</a>
+
