@@ -1,12 +1,25 @@
 <html>
   <head>
-    <link rel="stylesheet" href="../dist/jquery.tree-multiselect.min.css">
-
-    <script src="./vendor/jquery-1.11.3.min.js"></script>
-    <script src="./vendor/jquery-ui.min.js"></script>
-    <script src="../dist/jquery.tree-multiselect.js"></script>
+    <link rel="stylesheet" href="https://github.com/patosai/tree-multiselect.js/blob/master/dist/jquery.tree-multiselect.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css">
+    <style>
+      #container{
+      height:300px;
+        overflow:auto;
+      }
+      .section{
+      max-height:200px;
+       overflow:auto;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://github.com/patosai/tree-multiselect.js/blob/master/dist/jquery.tree-multiselect.js"></script>
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.js"></script>
+    
   </head>
   <body>
+    <div id="container">
     <select id="test-select" multiple="multiple">
       <option value="blueberry" data-section="Smoothies">Blueberry</option>
       <option value="longan" data-description="Really good :o" selected="selected">Longan</option>
@@ -27,8 +40,10 @@
       <option value="peach" data-section="Smoothies">Peach</option>
       <option value="peach" data-section="Smoothies">Peach</option>
     </select>
+    </div>
     <script type="text/javascript">
       var tree1 = $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true });
+      
     </script>
   </body>
 </html>
