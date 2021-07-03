@@ -5,6 +5,7 @@
     <style>
       #container{
       height:300px;
+        width:80%;
         overflow-y:auto;
       }
       .section{
@@ -19,7 +20,7 @@
     
   </head>
   <body>
-    <div id="container">
+    <div id="container" data-simplebar>
     <select id="test-select" multiple="multiple">
       <option value="blueberry" data-section="Smoothies">Blueberry</option>
       <option value="longan" data-description="Really good :o" selected="selected">Longan</option>
@@ -43,7 +44,9 @@
     </div>
     <script type="text/javascript">
       var tree1 = $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true });
-      $('#container').attr('data-simplebar')
+      //$('#container').attr('data-simplebar')
+      $('.section').attr('data-simplebar')
+      $('.selections').attr('data-simplebar')
     </script>
   </body>
 </html>
