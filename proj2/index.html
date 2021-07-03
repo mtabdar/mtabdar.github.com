@@ -5,11 +5,11 @@
     <style>
       #container{
       height:300px;
-        overflow:auto;
+        overflow-y:auto;
       }
       .section{
       max-height:200px;
-       overflow:auto;
+       overflow-y:auto;
       }
     </style>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -43,7 +43,7 @@
     </div>
     <script type="text/javascript">
       var tree1 = $("#test-select").treeMultiselect({ enableSelectAll: true, sortable: true });
-      
+      $('#container').attr('data-simplebar')
     </script>
   </body>
 </html>
